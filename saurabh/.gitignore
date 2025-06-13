@@ -1,6 +1,4 @@
-saurabh/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
 venv/
-*.pkl
