@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, jsonify
 import numpy as np
 import pickle
+import os
 
 # Load model and scalers
-model = pickle.load(open('model.pkl', 'rb'))
-sc = pickle.load(open('standscaler.pkl', 'rb'))
-ms = pickle.load(open('minmaxscaler.pkl', 'rb'))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model = pickle.load(open(os.path.join(BASE_DIR, 'model.pkl'), 'rb'))
+sc = pickle.load(open(os.path.join(BASE_DIR, 'standscaler.pkl'), 'rb'))
+ms = pickle.load(open(os.path.join(BASE_DIR, 'minmaxscaler.pkl'), 'rb'))
 
 app = Flask(__name__)
 
@@ -17,9 +19,6 @@ crop_dict = {
     19: "Pigeonpeas", 20: "Kidneybeans", 21: "Chickpea", 22: "Coffee"
 }
 
-# -------------------------
-# Web Form (HTML UI)
-# -------------------------
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -50,9 +49,6 @@ def predict():
 
     return render_template("index.html", result=result)
 
-# -------------------------
-# API for Android (JSON input/output)
-# -------------------------
 @app.route('/api/predict', methods=["POST"])
 def api_predict():
     try:
@@ -79,15 +75,9 @@ def api_predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# -------------------------
-# Health Check
-# -------------------------
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "API is running"})
 
-# -------------------------
-# Start Server
-# -------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
