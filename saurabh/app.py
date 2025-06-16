@@ -48,7 +48,10 @@ def predict():
         result = f"Error in prediction: {str(e)}"
 
     return render_template("index.html", result=result)
-
+@app.route('/api/ping')
+def ping():
+    return "pong"
+    
 @app.route('/api/predict', methods=["POST"])
 def api_predict():
     try:
